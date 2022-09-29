@@ -1,0 +1,23 @@
+# Ignore tmp file
+*.sw?
+
+# Ignore Mac DS_Store files
+.DS_Store
+
+.eunit
+*.o
+*.beam
+*.plt
+erl_crash.dump
+.concrete/DEV_MODE
+
+# rebar 2.x
+.rebar
+rel/example_project
+ebin/*.beam
+deps
+
+# rebar 3
+.rebar3
+_build/
+_checkouts/
