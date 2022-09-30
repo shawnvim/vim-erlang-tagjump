@@ -70,9 +70,12 @@ function! s:sortTag(tagname, flags, info, filter)
     let result = filter(tagList, a:filter)
     if (result != [] && fullpath !~# result[0].filename && g:vimErlangTagJump_sortTag != "" && len(result) < g:vimErlangTagJump_sortLengthMax)
         for item in result
-            let item['index'] = str2nr(system(g:vimErlangTagJump_sortTag . ' ' . item['filename'] . ' ' . fullpath . get(item, "module", "") . a:tagname))
+            if g:vimErlangTagJump_sortTag == 'default'
+                let item['index'] = DefaultStringDifferencial(item['filename'], fullpath)
+            else
+                let item['index'] = str2nr(system(g:vimErlangTagJump_sortTag . ' ' . item['filename'] . ' ' . fullpath . get(item, "module", "") . a:tagname))
+            endif
         endfor
-        " echom result
         call sort(result, function("CompareFilenames", [fullpath]))
     endif
     if result == []
@@ -92,5 +95,11 @@ function CompareFilenames(arg, item1, item2)
     let f1 = a:item1['index']
     let f2 = a:item2['index']
     return f1 <=# f2 ? -1 : f1 >=# f2 ? 1 : 0
+endfunction
+
+
+function DefaultStringDifferencial(str1, str2)
+    let whole = split(a:str1, '/') + split(a:str2, '/')
+    return len(uniq(whole))
 endfunction
 
