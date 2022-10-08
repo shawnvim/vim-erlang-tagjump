@@ -1,4 +1,4 @@
-# vim-erlang-tagjump
+vim-erlang-tagjump
 =======
 
 Tag jump by using universal-ctags in VIM
