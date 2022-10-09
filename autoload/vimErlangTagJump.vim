@@ -46,7 +46,9 @@ func! s:getFilter(pattern)
         else
             let funname = l:fun
         endif
-        return [funname, 'get(v:val, "module", "") ==# ' . '"' . l:mod . '"' . ' && ' . 'v:val.kind =~# "^f"']
+        let funfilter1 = '(v:val.kind =~# "^f"' . ' && ' . 'get(v:val, "module", "") ==# ' . '"' . l:mod . '")'
+        let funfilter2 = '(v:val.kind =~# "^t"' . ' && ' . 'fnamemodify(v:val.filename, ":t:r") ==# ' . '"' . l:mod . '")'
+        return [funname, funfilter1 . ' || ' . funfilter2]
     elseif (keyword2 =~ '#')
         return [a:pattern, 'v:val.kind =~# "^[r|a]"']
     elseif (keyword2 =~ '?')
