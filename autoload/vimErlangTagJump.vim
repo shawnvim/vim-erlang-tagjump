@@ -18,8 +18,33 @@ function vimErlangTagJump#TagFunc(pattern, flags, info)
 
     let [l:tagname, l:filter] = s:getFilter(keyword)
 
-    return s:sortTag(l:tagname, a:flags, a:info, l:filter)
 
+    if l:filter == ''
+        return vimErlangTagJump#FbTagFunc(a:pattern, a:flags, a:info)
+    else
+        return s:sortTag(l:tagname, a:flags, a:info, l:filter)
+    endif
+endfunc
+
+function vimErlangTagJump#FbTagFunc(pattern, flags, info)
+    let pattern = '^' . a:pattern . '$'
+    let fullpath = a:info.buf_ffname
+    let tagList = taglist(pattern, fullpath)
+    if tagList == []
+        call s:printWarning()
+        return v:null
+    endif
+    let extended_name_set = get(b:, 'extended_name_set', '')
+    if extended_name_set == '' || a:info.buf_ffname == tagList[0].filename
+        return tagList
+    endif
+    let extended_name_List = split(b:extended_name_set,',')
+    let result = filter(tagList, 'index(split(b:extended_name_set, ","), fnamemodify(v:val.filename, ":e:r")) >= 0')
+    if result == []
+        call s:printWarning()
+        return v:null
+    endif
+    return result
 endfunc
 
 
@@ -39,8 +64,6 @@ func! s:getFilter(pattern)
 
     if (keyword1[1:] =~ ':')
         let [l:mod, l:fun] = split(keyword1, ':')
-        let funfilter = 'v:val.kind =~# "^f"'
-        let modpattern = '"' . l:mod . '"'
         if l:fun =~# a:pattern
             let funname = a:pattern
         else
@@ -56,7 +79,7 @@ func! s:getFilter(pattern)
     elseif (keyword3 =~ '[(|/]')
         return [a:pattern, 'v:val.kind =~# "^[f|t]"']
     else
-        return [a:pattern, 'v:val.filename =~# ".[e|h]rl$"']
+        return [a:pattern, '']
     endif
 endfunc
 
