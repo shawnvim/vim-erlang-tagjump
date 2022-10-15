@@ -34,12 +34,11 @@ function vimErlangTagJump#FbTagFunc(pattern, flags, info)
         call s:printWarning()
         return v:null
     endif
-    let extended_name_set = get(b:, 'extended_name_set', '')
-    if extended_name_set == '' || a:info.buf_ffname == tagList[0].filename
+    let extended_name_set = get(b:, 'extended_name_set', [])
+    if extended_name_set == [] || a:info.buf_ffname == tagList[0].filename
         return tagList
     endif
-    let extended_name_List = split(b:extended_name_set,',')
-    let result = filter(tagList, 'index(split(b:extended_name_set, ","), fnamemodify(v:val.filename, ":e:r")) >= 0')
+    let result = filter(tagList, 'index(extended_name_set, fnamemodify(v:val.filename, ":e:r")) >= 0')
     if result == []
         call s:printWarning()
         return v:null
