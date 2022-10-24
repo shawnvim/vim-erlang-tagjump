@@ -10,6 +10,7 @@ endif
 
 
 function vimErlangTagJump#TagFunc(pattern, flags, info)
+    if !has_key(a:info, 'buf_ffname') | return [] | endif
     if (a:pattern =~# 'MODULE')
         let keyword = expand('%:t:r')
     else
@@ -27,6 +28,7 @@ function vimErlangTagJump#TagFunc(pattern, flags, info)
 endfunc
 
 function vimErlangTagJump#FbTagFunc(pattern, flags, info)
+    if !has_key(a:info, 'buf_ffname') | return [] | endif
     let pattern = '^' . a:pattern . '$'
     let fullpath = a:info.buf_ffname
     let tagList = taglist(pattern, fullpath)
