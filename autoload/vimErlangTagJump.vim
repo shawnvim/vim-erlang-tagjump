@@ -76,7 +76,7 @@ func! s:getFilter(pattern)
     elseif (keyword2 =~ '?')
         return [a:pattern, 'v:val.kind =~# "^[d|m|a]"']
     elseif (keyword3 =~ '[(|/]')
-        return [a:pattern, 'v:val.kind =~# "^[f|t]"']
+        return [a:pattern, 'v:val.kind =~# "^[f|t|a]"']
     else
         return [a:pattern, '']
     endif
