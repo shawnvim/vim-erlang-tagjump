@@ -132,6 +132,6 @@ endfunction
 
 function DefaultStringDifferencial(str1, str2)
     let whole = split(a:str1, '/') + split(a:str2, '/')
-    return len(uniq(whole))
+    return len(uniq(sort(whole)))
 endfunction
 
